@@ -1,0 +1,14 @@
+{
+  "title": "TypeScriptToLua で LÖVE のゲーム制作をする",
+  "closed": false,
+  "archived": false,
+  "created_at": "2023-08-12",
+  "comments": [
+    {
+      "author": "agdf",
+      "created_at": "2023-08-12",
+      "body_markdown": "https://github.com/hazzard993/love-typescript-definitions\n\n## 必要なもの\n\n- NodeJS + NPX\n- love2d\n\n\n## インストール\n\nプロジェクトのルートフォルダでコマンドを実行\n\n```shell\nnpm init -y\nnpm install -D typescript-to-lua love-typescript-definitions\n```\n\n`tsconfig.json` を以下のように作成\n\n```json:tsconfig.json\n{\n    \"compilerOptions\": {\n        \"lib\": [\"ESNext\"],\n        \"types\": [\n            \"love-typescript-definitions\",\n            \"@typescript-to-lua/language-extensions\",\n        ]\n    },\n}\n```\n\n\n## 動作確認とコンパイル方法\n\n`src/main.ts` を作成し、下記のように記述。\n\n```ts:main.ts\nlove.draw = () => { love.graphics.print('Hello World') };\n```\n\n下記のコマンドで、コンパイルとと実行ができる。\n\n```shell\nnpx tstl -p tsconfig.json\nlove .\n```\n\n\n## ライブラリの追加\n\nts で型定義ファイルが作られているライブラリを追加する場合は、 npm でインストールしつつ、 `tsconfig.json` に記述していく。\n\n[roomy](https://github.com/tesselode/roomy) を ts で使えるようにするには、下記のようにする。\n\n以下のコマンドを実行する。\n\n```shell\nnpm i -D tstl-roomy\n```\n\n適当なフォルダに `roomy.lua` を追加する。今回は `lua/roomy` フォルダを作り、 `roomy.lua` を `init.lua` という名前で保存した。\n\n```\n├ lua\n│└ roomy\n│  └ init.lua (roomy.lua)\n└ tsconfig.json\n```\n\n`src/conf.ts` に下記の記述をする。\n\n```ts:conf.ts\npackage.path += \";./lua/?/init.lua\";\n```\n\n最後に、`tsconfig.json` に参照ファイルを追加し、完了。\n\n```diff json:tsconfig.json\n        \"types\": [\n            \"love-typescript-definitions\",\n            \"@typescript-to-lua/language-extensions\",\n+            \"tstl-roomy\"\n        ]\n```\n\nこれで ts 側から roomy が使えるようになり、実行できるようになる。",
+      "body_updated_at": "2023-08-12"
+    }
+  ]
+}

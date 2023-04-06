@@ -1,0 +1,9 @@
+title: "LÖVE 入門"
+summary: "C++ でゲームを作りたくない、かといって Unity みたいに何もかも用意された環境はちょっと……みたいな人向けの本です。\n簡潔に書くこと、また、最終的には型のある世界に回帰させることを目標にしています。"
+topics: ["lua", "love2d"]
+published: false
+price: 0 # 有料の場合200〜5000
+# 本に含めるチャプターを順番に並べましょう
+chapters:
+  - what_is_love2d
+  # - env_setup

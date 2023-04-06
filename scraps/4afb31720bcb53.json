@@ -1,0 +1,25 @@
+{
+  "title": "NodeCG で Emotion を使おうとしたら ESLint にずっと文句言われた",
+  "closed": true,
+  "archived": false,
+  "created_at": "2023-05-09",
+  "comments": [
+    {
+      "author": "agdf",
+      "created_at": "2023-05-09",
+      "body_markdown": "## 問題\n\n```tsx\n    <button\n      css={styles}\n      ^^^\n      プロパティ 'css' は型 'DetailedHTMLProps<...>' に存在しません。ts(2322)\n      ...\n    >\n```\n\nEmotion自体は使えるが、ただただエラーが出る。鬱陶しい。",
+      "body_updated_at": "2023-05-09"
+    },
+    {
+      "author": "agdf",
+      "created_at": "2023-05-09",
+      "body_markdown": "## 解決方法\n\n行頭に以下を追記した。\n\n```tsx\n/** @jsxImportSource @emotion/react */\n```\n\n`tsconfig.json` に `\"types\": [\"@emotion/react/types/css-prop\"]` を追記しろと多くの場合書いてあったが、それでも解決せず。\n逐一行頭にPragmaを記述する必要があるが、[これ](https://github.com/emotion-js/emotion/issues/1249#issuecomment-806358174)で解決した。スニペットにすればいいのでそこまで困った話ではないけども。",
+      "body_updated_at": "2023-05-09"
+    },
+    {
+      "author": "agdf",
+      "created_at": "2023-05-09",
+      "body_markdown": "[この記事](https://t28.dev/blog/what-old-and-new-jsx-transform-pragma-and-import-source-option-do/#つまりjsximportsource-がやっていることは)が参考になった。\nEmotionが独自に使用するcssプロパティを持つHTML要素を使用しなさいってコンパイラに指示するものってことだと解釈した。"
+    }
+  ]
+}

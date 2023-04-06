@@ -1,0 +1,26 @@
+{
+  "title": "Svelte の描画が特定条件下でバカみたいに重かった",
+  "closed": true,
+  "archived": false,
+  "created_at": "2023-04-28",
+  "comments": [
+    {
+      "author": "agdf",
+      "created_at": "2023-04-28",
+      "body_markdown": "`bind:clientWidth / clientHeight` を持つ要素を何個も再描画しようとするとかなりパフォーマンスが落ちるっぽいので気をつけましょうってやつ（そりゃそう）\n後で実験結果を纏める",
+      "body_updated_at": "2023-04-28"
+    },
+    {
+      "author": "agdf",
+      "created_at": "2023-04-30",
+      "body_markdown": "## 実験に使用したコード\n```html\n<script lang=\"ts\">\n  import Component from './component.svelte';\n\n  const components = [...Array(100)].map(() => Component);\n</script>\n\n<main style=\"display: flex; flex-wrap: wrap;\">\n  {#each components as component, i}\n    <svelte:component this={component} {i} />\n  {/each}\n</main>\n```\n\n```html\n<script lang=\"ts\">\n  export let i = 0;\n  let width = 0;\n</script>\n\n<div bind:clientWidth={width}>{`${i},`}</div>\n<!-- <div>{`${i},`}</div> -->\n```\n\n\n## `bind:clientWidth` あり\n\n![](https://storage.googleapis.com/zenn-user-upload/7874387026e4-20230430.png)\n\n\n## なし\n\n![](https://storage.googleapis.com/zenn-user-upload/a20aed7bc53c-20230430.png)\n",
+      "body_updated_at": "2023-04-30"
+    },
+    {
+      "author": "agdf",
+      "created_at": "2023-04-30",
+      "body_markdown": "`bind:clientWidth` をつけた方は描画に5秒程度かかっているが、付けていない方は0.4秒程度。\n裏で走っているタスクの量がとんでもないことになっている。\n\nまあこんなにバインドさせることがあるかという話だが、なんかやけに重いと感じたらこの辺が悪さしているかもしれない。そしてまあそりゃそうという話だが、むやみにバインドに頼ってはいけない。\n\n私はフロント初心者なので詳しいことは分からないが……",
+      "body_updated_at": "2023-04-30"
+    }
+  ]
+}

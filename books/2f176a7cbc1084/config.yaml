@@ -1,0 +1,10 @@
+title: "Typst で卒業論文を書きたい！"
+summary: "Latex 書きたくない！という人に向けた新興の組版処理システムである Typst で卒業論文や修士論文のフォーマットや本文を作り、提出できるようにするまでのチュートリアルです。"
+topics: ["typst"]
+published: false
+price: 0 # 有料の場合200〜5000
+# 本に含めるチャプターを順番に並べましょう
+chapters:
+  - no_more_latex
+  # - concept
+

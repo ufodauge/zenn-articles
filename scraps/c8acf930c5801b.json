@@ -1,0 +1,42 @@
+{
+  "title": "LiveSplit のコンポーネントを作りたい",
+  "closed": false,
+  "archived": false,
+  "created_at": "2023-08-08",
+  "comments": [
+    {
+      "author": "agdf",
+      "created_at": "2023-08-08",
+      "body_markdown": "~~VSCode に C# の拡張機能追加されたしできるだろと思った　C# の経験全然ないからほんとにわからないけど~~出来なかったのでタイトルから消した\n\n最終目標：LiveSplit で Web サーバーを起動し、Markdown で書ける LiveSplit のガイドコンポーネントを作る\n\nhttps://soushinsoujin989.blogspot.com/2021/04/livesplit_99.html",
+      "body_updated_at": "2023-08-09"
+    },
+    {
+      "author": "agdf",
+      "created_at": "2023-08-08",
+      "body_markdown": "https://gist.github.com/TheSoundDefense/cf85fd68ae582faa5f1cc95f18bba4ec\n\nLiveSplit 本体と一緒にコンパイルする必要があるらしい\nとりあえず最初は Visual Studio で進めてみる\n\n`https://github.com/LiveSplit/LiveSplit.git` から LiveSplit 本体をクローン\nサブモジュールを含むので `--recursive` オプションが必須\n\n```\n> git clone https://github.com/LiveSplit/LiveSplit.git --recursive\nCloning into 'LiveSplit'...\nremote: Enumerating objects: 16930, done.\nremote: Counting objects: 100% (5842/5842), done.\nremote: Compressing objects: 100% (438/438), done.\n...\n```\n\n`\\LiveSplit\\LiveSplit\\LiveSplit.sln` を開き、ソリューションをビルドする。古い .NET Framework で作られているので .NET Framework 4.6.1 がなければダウンロードする必要がある。あと 3.5 も必要。サポートは終了してるけどしょうがない。\n\nとりあえずビルドできれば良いのでここを通過したら本体は一旦放置。",
+      "body_updated_at": "2023-08-08"
+    },
+    {
+      "author": "agdf",
+      "created_at": "2023-08-08",
+      "body_markdown": "コンポーネント本体のプロジェクトを作る。\n新規にプロジェクトを作成する画面から「クラスライブラリ (.NET Framework)」を選択。\n\nエディタ画面に遷移したらソリューションエクスプローラーで右クリック→追加→既存のプロジェクトで、先にクローンした LiveSplit のフォルダに有る `LiveSplitCore.csproj` `UpdateManager.csproj` を追加。\n\n次に、自分の作成したプロジェクトの参照を右クリック→参照の追加で、左のツリービューのプロジェクトを選択し、`LiveSplitCore` `UpdateManager` を選択、OK。"
+    },
+    {
+      "author": "agdf",
+      "created_at": "2023-08-09",
+      "body_markdown": "コンポーネントのプロジェクトに `{ComponentName}.cs` `{ComponentName}Factory.cs` を作成し、テンプレートを作る。\n\n今回は ComponentName := MarkedNotes とした。\n\n```cs:MarkedNotesFactory.cs\nusing LiveSplit.Model;\nusing System;\n\nnamespace LiveSplit.UI.Components\n{\n    public class MarkedNotesFactory : IComponentFactory\n    {\n        // コンポーネント名\n        public string ComponentName => \"Marked Notes\";\n\n        // コンポーネントの説明\n        // レイアウト追加時にホバーするとツールチップで表示される\n        public string Description => throw new NotImplementedException();\n\n        // コンポーネントのカテゴリ\n        // コンポーネント追加ボタンを押した際にされているカテゴリ分けに必要\n        public ComponentCategory Category => ComponentCategory.Other;\n\n        // コンポーネントを追加した際に呼び出されるメソッド\n        // コンポーネント本体を返す\n        public IComponent Create(LiveSplitState state) => new MarkedNotes(state);\n\n        // こっから下はよく知らない\n\n        public string UpdateName => ComponentName;\n\n        public string XMLURL => throw new NotImplementedException();\n\n        public string UpdateURL => throw new NotImplementedException();\n\n        public Version Version => Version.Parse(\"0.0.1\");\n    }\n}\n```\n\n```cs:MarkedNotes.cs\nusing LiveSplit.Model;\nusing System;\nusing System.Xml;\nusing System.Windows.Forms;\n\n// 全然コメントないけど眠いから許して\nnamespace LiveSplit.UI.Components\n{\n    // 通常は IComponent を実装するが、\n    // LiveSplit 上にUIを表示させる必要がないときは\n    // LogicComponent を実装する\n    public class MarkedNotes : LogicComponent\n    {\n        public MarkedNotes(LiveSplitState state)\n        {\n            throw new NotImplementedException();\n        }\n\n        public override string ComponentName => \"Marked Notes\";\n\n        public override void Dispose()\n        {\n            throw new NotImplementedException();\n        }\n\n        public override XmlNode GetSettings(XmlDocument document)\n        {\n            throw new NotImplementedException();\n        }\n\n        public override Control GetSettingsControl(LayoutMode mode)\n        {\n            throw new NotImplementedException();\n        }\n\n        public override void SetSettings(XmlNode settings)\n        {\n            throw new NotImplementedException();\n        }\n\n        public override void Update(IInvalidator invalidator, LiveSplitState state, float width, float height, LayoutMode mode)\n        {\n            throw new NotImplementedException();\n        }\n    }\n}\n```\n\nぱっと思いついたのだけちょろっと実装してるけど気にせず。",
+      "body_updated_at": "2023-08-09"
+    },
+    {
+      "author": "agdf",
+      "created_at": "2023-08-09",
+      "body_markdown": "`AssemblyInfo.cs` の末尾に下記を追記\n\n```cs\n[assembly: ComponentFactory(typeof(MarkedNotesFactory))]\n```\n\n新しい項目としてユーザーコントロールフォームを作成。\n\n下準備はこれで終わり？"
+    },
+    {
+      "author": "agdf",
+      "created_at": "2023-08-09",
+      "body_markdown": "あとはやりたいことがちゃんと実現できるかを試す必要がある。\n\nとりあえず要件整理。\n\n## やりたいこと\nLiveSplit （C#） で Web サーバーを立てて、マークダウンのデータを区間ごとに表示し、区間が切り替わったら即座に表示内容を変更する。\n\n### 細分化\n- LiveSplit （C#） で Web サーバーを立てる\n- サーバー側から HTML にデータを送信し、表示区間変更イベントを受け取ったらそれに従って表示内容を変更する（多分 WebSocket で通信）\n  - WebSocket 通信を行うコンポーネント自体はあるけどとりあえずは自作する方針で　めんどくさくなったらやめる\n\n\n一旦時間空きます\n",
+      "body_updated_at": "2023-08-12"
+    }
+  ]
+}
